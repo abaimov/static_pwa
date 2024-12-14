@@ -65,24 +65,37 @@ function detectDevice() {
 let deferredPrompt; // Для хранения события beforeinstallprompt
 function checkAppInstallation(device) {
     if (device === 'iOS') {
+        // Проверка для iOS
         if (window.navigator.standalone) {
             console.log('App is installed as PWA on iOS');
+            // Приложение установлено, скрыть баннер
+            hideInstallBanner();
         } else {
             console.log('App is not installed on iOS');
+            // Приложение не установлено, показать баннер
+            showInstallBanner('iOS');
         }
     } else if (device === 'Desktop') {
+        // Проверка для Desktop
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();  // Останавливаем стандартное поведение
             deferredPrompt = e;  // Сохраняем событие для использования позже
             console.log('App can be installed as PWA on Desktop');
-            showInstallBanner('Desktop');
+            // Показываем баннер, только если приложение не установлено
+            if (!window.matchMedia('(display-mode: standalone)').matches) {
+                showInstallBanner('Desktop');
+            }
         });
 
         // Проверка установки через `window.matchMedia` для поддержки десктопных PWA
         if (window.matchMedia('(display-mode: standalone)').matches) {
             console.log('App is installed as PWA on Desktop');
+            // Приложение установлено, скрыть баннер
+            hideInstallBanner();
         } else {
             console.log('App is not installed on Desktop');
+            // Приложение не установлено, показать баннер
+            showInstallBanner('Desktop');
         }
     }
 }
@@ -156,5 +169,13 @@ function showInstallBanner(device) {
                 deferredPrompt = null; // Сбрасываем
             });
         });
+    }
+}
+
+// Функция для скрытия баннера
+function hideInstallBanner() {
+    const banner = document.getElementById('install-banner');
+    if (banner) {
+        banner.style.display = 'none';
     }
 }
