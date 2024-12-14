@@ -25,7 +25,7 @@ window.addEventListener('load', async () => {
 });
 
 async function loadPosts() {
-    const res = await fetch('http://localhost:8000/api/link');
+    const res = await fetch('https://express-pwa.onrender.com/api/link');
     const data = await res.json();
     console.log(data);
     const container = document.querySelector('#dynamic_link');
